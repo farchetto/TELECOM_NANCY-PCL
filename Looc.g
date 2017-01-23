@@ -17,18 +17,15 @@ type:             IDF_CLASS
     |             'string'
     ;
 
-method_decl:      'method' IDF '(' method_args* ')'
-	(			  '{' var_decl* instruction+ '}'
-    |             ':' type '{' var_decl* instruction+ '}'
-	)
+method_decl:      'method' IDF '(' method_args* ')' method_decl_suite ;
+
+method_decl_suite:	'{' var_decl* instruction+ '}'
+	|             	':' type '{' var_decl* instruction+ '}'
     ;
 
 method_args:      IDF ':' type {',' IDF ':' type}* ;
 
-instruction:      IDF ':=' 
-	(			  expression ';'
-    |             'nil' ';'
-	)
+instruction:      IDF ':=' instruction_suite
     |             'if' expression 'then' instruction ('else' instruction)? 'fi'
     |             'for' IDF 'in' expression '..' expression 'do' instruction+ 'end'
     |             '{' var_decl* instruction+ '}'
@@ -38,10 +35,14 @@ instruction:      IDF ':='
     |             return_func
     ;
 
-print_func:       'write' 
-	(			  expression ';'
-    |             CSTE_CHAINE ';'
-	)
+instruction_suite:	expression ';'
+    |             	'nil' ';'
+	;
+
+print_func:       'write' print_func_suite ;
+
+print_func_suite:	expression ';'
+    |             	CSTE_CHAINE ';'
     ;
 
 read_func:        'read' IDF ';' ;
