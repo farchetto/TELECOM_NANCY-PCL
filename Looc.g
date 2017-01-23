@@ -1,5 +1,9 @@
 grammar Looc ;
 
+options{
+	k=1; /* permet de dire que la grammaire doit etre LL(1) */
+}
+
 prog:             class_decl* var_decl* instruction+ ;
 
 class_decl:       'class' IDF_CLASS ( 'inherit' IDF_CLASS )? '=' '(' class_item_decl ')' ; /* les options sont mis en 0 ou 1 avec '?' */
@@ -44,17 +48,18 @@ read_func:        'read' IDF ';' ;
 
 return_func:      'return' '(' expression ')' ';' ;
 
-expression:       IDF
-    |             'this'
-    |             'super'
-    |             CSTE_ENT
-    |             'new' IDF_CLASS
-    |             '(' expression ')'
-    |             '-' expression
-    |             expression 
-	(			  '.' IDF '(' expression {',' expression}* ')'
-    |             oper expression
-	)
+expression:       IDF expr
+    |             'this' expr
+    |             'super' expr
+    |             CSTE_ENT expr
+    |             'new' IDF_CLASS expr
+    |             '(' expression ')' expr
+    |             '-' expression expr
+	;
+
+expr:			  '.' IDF '(' expression {',' expression}* ')' expr
+    |             oper expression expr
+	|			  
     ;
 
 oper:             '+'
