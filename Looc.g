@@ -2,51 +2,59 @@ grammar Looc ;
 
 prog:             class_decl* var_decl* instruction+ ;
 
-class_decl:       'class' Idf [ 'inherit' Idf ] '=' '(' class_item_decl ')' ;
+class_decl:       'class' IDF_CLASS ( 'inherit' IDF_CLASS )? '=' '(' class_item_decl ')' ; /* les options sont mis en 0 ou 1 avec '?' */
 
 class_item_decl:  var_decl* method_decl* ;
 
-var_decl:         'var' idf ':' type ';' ;
+var_decl:         'var' IDF ':' type ';' ;
 
-type:             Idf
+type:             IDF_CLASS
     |             'int'
     |             'string'
     ;
 
-method_decl:      'method' idf '(' method_args* ')' '{' var_decl* instruction+ '}'
-    |             'method' idf '(' method_args* ')' ':' type '{' var_decl* instruction+ '}'
+method_decl:      'method' IDF '(' method_args* ')'
+	(			  '{' var_decl* instruction+ '}'
+    |             ':' type '{' var_decl* instruction+ '}'
+	)
     ;
 
-method_args:      idf ':' type {',' idf ':' type}* ;
+method_args:      IDF ':' type {',' IDF ':' type}* ;
 
-instruction:      idf ':=' expression ';'
-    |             idf ':=' 'nil' ';'
-    |             'if' expression 'then' instruction ['else' instruction] 'fi'
-    |             'for' idf 'in' expression '..' expression 'do' instruction+ 'end'
+instruction:      IDF ':=' 
+	(			  expression ';'
+    |             'nil' ';'
+	)
+    |             'if' expression 'then' instruction ('else' instruction)? 'fi'
+    |             'for' IDF 'in' expression '..' expression 'do' instruction+ 'end'
     |             '{' var_decl* instruction+ '}'
-    |             'do' expression '.' idf '(' expression {',' expression}* ')' ';'
-    |             print
-    |             read
-    |             return
+    |             'do' expression '.' IDF '(' expression {',' expression}* ')' ';'
+    |             print_func
+    |             read_func
+    |             return_func
     ;
 
-print:            'write' expression ';'
-    |             'write' CSTE_CHAINE ';'
+print_func:       'write' 
+	(			  expression ';'
+    |             CSTE_CHAINE ';'
+	)
     ;
 
-read:             'read' idf ';' ;
+read_func:        'read' IDF ';' ;
 
-return:           'return' '(' expression ')' ';' ;
+return_func:      'return' '(' expression ')' ';' ;
 
-expression:       idf
+expression:       IDF
     |             'this'
     |             'super'
     |             CSTE_ENT
-    |             'new' Idf
-    |             expression '.' idf '(' expression {',' expression}* ')'
+    |             'new' IDF_CLASS
     |             '(' expression ')'
     |             '-' expression
-    |             expression oper expression
+    |             expression 
+	(			  '.' IDF '(' expression {',' expression}* ')'
+    |             oper expression
+	)
     ;
 
 oper:             '+'
@@ -62,5 +70,6 @@ oper:             '+'
 
 CSTE_ENT:         '0'..'9'+ ;
 CSTE_CHAINE:      '"' ('a'..'z' | 'A'..'Z' | '0'..'9' | ' ' | '#' | '@' | '&' | '(' | ')' | '{' | '}' | '[' | ']' | '?' | '!' | ':' | ';' | '=' | '.' | ',' | '%' | '£' | '$' | '€' | '°' | '<' | '>' | ''')+ '"' ;
-Idf:              ('A'..'Z') ('A'..'Z' | 'a'..'z' | '0'..'9' | '_')* ;
-idf:              ('a'..'z') ('A'..'Z' | 'a'..'z' | '0'..'9' | '_')* ;
+IDF_CLASS:        ('A'..'Z') ('A'..'Z' | 'a'..'z' | '0'..'9' | '_')* ; /* Idf = IDF_CLASS*/
+IDF:              ('a'..'z') ('A'..'Z' | 'a'..'z' | '0'..'9' | '_')* ; /* idf = IDF */
+WS	:	  (' '|'\t'|'\n')+ {$channel=HIDDEN;} ;
