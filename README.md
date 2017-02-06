@@ -5,8 +5,9 @@ done:
 * dé-récursion
 * retrait de l'ambiguïté (LL(1))
 * écriture des terminaux en majuscule (distinction idf et IDF)
+* priorité des opérateurs
+* écrit de test
 
 to do:
-* priorité des opérateurs
-* écrire des tests
+* continuer d'écrire des tests
 * utiliser antlrworks pour vérifier la syntaxe de la grammaire
