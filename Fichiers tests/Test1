@@ -1,10 +1,10 @@
 var n : int ;
 var total : int;
-var i:int ;
-n := 10;
+var i : int ;
+n := 10 ;
 total := 0 ;
-for i in 0 .. n
+for i in 0..n
 do
-total := total + i∗ i ;
+total := total + i * i ;
 end
 write total;

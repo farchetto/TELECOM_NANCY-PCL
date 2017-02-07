@@ -23,8 +23,9 @@ class Fibonacci =
 	method nextGenAndGet() : int
 	{
 		do this.nextGen();
-		rturn (current);
+		return (current);
 	}
+)
 
 var f : Fibonacci;
 f := new Fibonacci;

@@ -14,7 +14,7 @@ class Animal =
 	}
 )
 
-class Dog inherit ANimal =
+class Dog inherit Animal =
 (
 	method whoami()
 	{

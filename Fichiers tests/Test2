@@ -7,13 +7,13 @@ class Math =
 
 		if b == 0
 		then
-			1return ( 1) ;
+			return ( 1) ;
 		fi
 		
 		retval := 1 ;
 		for i in 1 .. b
 		do
-			retval := retval ∗ a;
+			retval := retval * a;
 		end
 		
 		return (retval) ;
