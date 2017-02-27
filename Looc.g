@@ -2,6 +2,7 @@ grammar Looc ;
 
 options{
 			k=1; /* permet de dire que la grammaire doit etre LL(1) */
+			output=AST;
 }
 
 prog:             	class_decl* var_decl* instruction+ ;
@@ -85,9 +86,10 @@ comp:		  	EQ
     
 CSTE_ENT:         	'0'..'9'+ ;
 CSTE_CHAINE:      	'"' .+ '"' ;
+CSTE_COMM:		'/*' .* '*/';
 IDF_CLASS:        	('A'..'Z') ('A'..'Z' | 'a'..'z' | '0'..'9' | '_')* ; /* Idf = IDF_CLASS*/
 IDF:              	('a'..'z') ('A'..'Z' | 'a'..'z' | '0'..'9' | '_')* ; /* idf = IDF */
-WS:	  		(' '|'\t'|'\n')+ {$channel=HIDDEN;} ;
+WS:	  		(' '|'\t'|'\n'|CSTE_COMM)+ {$channel=HIDDEN;} ;
 MUL:		  	'*';
 ADD:		  	'+';
 SUB:		  	'-';
