@@ -5,14 +5,14 @@ options{
 			output=AST;
 }
 
-prog:             	class_decl* var_decl* instruction+ ;
+prog:             	class_decl* var_decl* instruction+;
 
-class_decl:       	'class' IDF_CLASS ( 'inherit' IDF_CLASS )? '=' '(' class_item_decl ')' ; /* les options sont mis en 0 ou 1 avec '?' */
+class_decl:       	'class' IDF_CLASS ( 'inherit' IDF_CLASS )? '=' '(' class_item_decl ')'; /* les options sont mis en 0 ou 1 avec '?' */
 
 class_item_decl:  	var_decl* method_decl* ;
 
 var_decl:         	'var' IDF ':' type ';' ;
-
+ 
 type:             	IDF_CLASS
     |             	'int'
     |			'string'
