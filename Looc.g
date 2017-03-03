@@ -5,70 +5,86 @@ options{
 			output=AST;
 }
 
-prog:             	class_decl* var_decl* instruction+;
+tokens{
+	PROG;
+	CLASSDEF;
+	INHERIT;
+	CLASSBODY;
+	METHODBODY;
+	FORBODY;
+	VARDEF;
+	METHODDEF;
+	ARGS;
+	RETURN;
+	AFFECT;
+	IF;
+	THEN;
+	ELSE;
+	FOR;
+	INSTRUCTIONS;
+	DO;
+	WRITE;
+	READ;
+	NEW;
+	MINUS;
+}
 
-class_decl:       	'class' IDF_CLASS ( 'inherit' IDF_CLASS )? '=' '(' class_item_decl ')'; /* les options sont mis en 0 ou 1 avec '?' */
+prog:             	class_decl* var_decl* instruction+ -> ^(PROG class_decl* var_decl* instruction+);
 
-class_item_decl:  	var_decl* method_decl* ;
+class_decl:       	'class' IDF_CLASS ( 'inherit' IDF_CLASS )? '=' '(' class_item_decl ')' -> ^(CLASSDEF IDF_CLASS ^(INHERIT IDF_CLASS)? class_item_decl); /* les options sont mis en 0 ou 1 avec '?' */
 
-var_decl:         	'var' IDF ':' type ';' ;
+class_item_decl:  	var_decl* method_decl* -> ^(CLASSBODY var_decl* method_decl*);
+
+var_decl:         	'var' IDF ':' type ';' -> ^(VARDEF IDF type);
  
 type:             	IDF_CLASS
     |             	'int'
     |			'string'
     ;
 
-method_decl:		'method' IDF '(' method_args* ')' method_decl_suite ;
+method_decl:		'method' IDF '(' method_args? ')' method_decl_suite -> ^(METHODDEF IDF method_args? method_decl_suite);
 
-method_decl_suite:	'{' var_decl* instruction+ '}'
-    |             	':' type '{' var_decl* instruction+ '}'
-    ;
+method_decl_suite:	(':' type)? '{' var_decl* instruction+ '}' -> ^(RETURN type)? ^(METHODBODY var_decl* instruction+);
 
-method_args:      	IDF ':' type (',' IDF ':' type)* ;
+method_args:      	IDF ':' type (',' IDF ':' type)* -> ^(ARGS (IDF type)+);
 
-instruction:      	IDF ':=' instruction_suite
-    |             	'if' expression 'then' instruction ('else' instruction)? 'fi'
-    |             	'for' IDF 'in' expression '..' expression 'do' instruction+ 'end'
-    |             	'{' var_decl* instruction+ '}'
-    |             	'do' expression ';'
+instruction:      	IDF ':=' instruction_suite -> ^(AFFECT IDF instruction_suite)
+    |             	'if' expression 'then' a=instruction ('else' b=instruction)? 'fi' -> ^(IF expression ^(THEN $a) ^(ELSE $b)?) 
+    |             	'for' IDF 'in' c=expression '..' d=expression 'do' instruction 'end' -> ^(FOR IDF $c $d ^(FORBODY instruction))
+    |             	'{' var_decl* instruction+ '}' -> ^(INSTRUCTIONS var_decl* instruction+)
+    |             	'do' expression ';' -> ^(DO expression)
     |             	print_func
     |             	read_func
     |             	return_func
     ;
 
-instruction_suite:	expression ';'
-    |             	'nil' ';'
-	;
-
-print_func:       	'write' print_func_suite ;
-
-print_func_suite:	expression ';'
+instruction_suite:	expression ';' -> expression
+    |             	'nil' ';' -> 'nil'
     ;
 
-read_func:        	'read' IDF ';' ;
+print_func:       	'write' print_func_suite -> ^(WRITE print_func_suite);
 
-return_func:      	'return' '(' expression ')' ';' ;
+print_func_suite:	expression ';' -> expression;
 
-expression:		add_expression (comp add_expression)*;
+read_func:        	'read' IDF ';' -> ^(READ IDF);
 
-add_expression:		mult_expression (add mult_expression)*;
+return_func:      	'return' '(' expression ')' ';' -> ^(RETURN expression);
 
-mult_expression:	expr (multi expr)*;
+expression:		add_expression (comp^ add_expression)*;
 
+add_expression:		mult_expression (add^ mult_expression)*;
 
+mult_expression:	expr (multi^ expr)*;
 
-
-expr:      		IDF expr_optionnal_func
-    |            	'this' expr_optionnal_func
-    |             	'super' expr_optionnal_func
-    |             	CSTE_ENT expr_optionnal_func
-    |		  	CSTE_CHAINE expr_optionnal_func
-    |             	'new' IDF_CLASS expr_optionnal_func
-    |             	'(' expression ')' expr_optionnal_func
-    |             	SUB expr
+expr:      		IDF ('.'^ IDF '('! (expression (','! expression)*)? ')'!)*
+    |            	'this' ('.'^ IDF '('! (expression (','! expression)*)? ')'!)*
+    |             	'super' ('.'^ IDF '('! (expression (','! expression)*)? ')'!)*
+    |             	'('! expression ')'! ('.'^ IDF '('! (expression (','! expression)*)? ')'!)*
+    |             	CSTE_ENT
+    |		  	CSTE_CHAINE
+    |             	'new' IDF_CLASS -> ^(NEW IDF_CLASS)
+    |             	SUB expr -> ^(MINUS expr)
     ;
-
-expr_optionnal_func:	('.' IDF '(' (expression (',' expression)*)? ')')*;
 
 multi:		  	MUL;
 
