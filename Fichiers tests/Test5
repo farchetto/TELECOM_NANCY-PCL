@@ -1,7 +1,7 @@
 class Vehicule = 
 (
-	var plaque : string
-	var prix : int
+	var plaque : string;
+	var prix : int;
 	
 	method changer(plaque : string , prix : string)
 	{
@@ -17,7 +17,7 @@ class Vehicule =
 		i := 0;
 		i := (i + 5) * 2 + 5;
 		for i in 1..10
-		Ondo
+		do
 			write i;
 			if (i == 1) + ( 3*4+5 <= i)
 			then 
@@ -39,7 +39,7 @@ class Vehicule =
 class Voiture inherit Vehicule =
 (
 
-	var couleur : string
+	var couleur : string;
 
 	method changer(plaque : string , prix : string)
 	{
