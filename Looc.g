@@ -70,11 +70,11 @@ read_func:        	'read' IDF ';' -> ^(READ IDF);
 
 return_func:      	'return' '(' expression ')' ';' -> ^(RETURN expression);
 
-expression:		add_expression (comp^ add_expression)*;
+expression:		mult_expression (add^ mult_expression)*;
 
-add_expression:		mult_expression (add^ mult_expression)*;
+mult_expression:	comp_expression (multi^ comp_expression)*;
 
-mult_expression:	expr (multi^ expr)*;
+comp_expression: 	expr (comp^ expr)*;
 
 expr:      		IDF ('.'^ IDF '('! (expression (','! expression)*)? ')'!)*
     |            	'this' ('.'^ IDF '('! (expression (','! expression)*)? ')'!)*
