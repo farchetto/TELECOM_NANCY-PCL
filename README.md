@@ -7,7 +7,13 @@ done:
 * écriture des terminaux en majuscule (distinction idf et IDF)
 * priorité des opérateurs
 * écrit de test
-
-to do:
-* continuer d'écrire des tests
 * utiliser antlrworks pour vérifier la syntaxe de la grammaire
+
+in do :
+* afficher arbre "dans le terminal" cf TestLooc.java
+* creation tds
+* controle semantique
+* passer sous eclipse
+
+like always :
+* continuer d'écrire des tests
