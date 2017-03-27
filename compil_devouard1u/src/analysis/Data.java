@@ -3,21 +3,20 @@ package analysis;
 import java.util.ArrayList;
 
 public class Data {
-		
+
 		private String name;
 		private String type; // faire une classe avec enum string, int
-		private String defaultValue;
 		private boolean isFunction;
 		private ArrayList<Data> params;
 		private int relativeAddress;
 		private int size;
-		
+
 		public Data (String name,String type){
 			this.name=name;
 			this.type=type;
 			this.params=new ArrayList<Data>();
 		}
-		
+
 		public int getRelativeAddress() {
 			return relativeAddress;
 		}
@@ -30,23 +29,17 @@ public class Data {
 			if(params==null){
 				this.params=new ArrayList<Data>();
 			}
-			for (Data param:params){
-				if (param.getName().equals(info.getName())){
-					System.err.println("variable or function already exists"+info.getName());
-					return;
-				}
-			}
 			this.params.add(info);
 		}
 
 		public Data getParam(int i){
 			return this.params.get(i);
 		}
-		
-		public int getParamsCount(){
+
+		public int getParamsSize(){
 			return params.size();
 		}
-		
+
 		public ArrayList<Data> getParams(){
 			return params;
 		}
@@ -59,14 +52,6 @@ public class Data {
 			this.type = type;
 		}
 
-		public String getDefaultValue() {
-			return defaultValue;
-		}
-
-		public void setDefaultValue(String defaultValue) {
-			this.defaultValue = defaultValue;
-		}
-
 		public String getName() {
 			return name;
 		}
@@ -74,7 +59,7 @@ public class Data {
 		public void setName(String name) {
 			this.name = name;
 		}
-		
+
 		public String toString(){
 			String s = "("+name+","+type+")";
 			if (!params.isEmpty()){
@@ -82,9 +67,9 @@ public class Data {
 			}
 			return s;
 		}
-		
-		public void setIsFunction(boolean function){
-			this.isFunction = function;
+
+		public void setIsFunction(boolean bool){
+			this.isFunction = bool;
 		}
 
 		public boolean isFunction() {
