@@ -1,0 +1,39 @@
+class Point =
+(
+	var x : int;
+	var y : int;
+
+	method setPoint(x : int ,y : int)
+	{
+		x := x;
+		y := y;
+	}
+
+	method print()
+	{
+		write x;
+		write y;
+	}
+
+	method x() /* identificateur "x" deja utilise pour definir une variable int */
+	{
+		write x;
+	}
+)
+
+var x : int ;
+var y : int ;
+x := y; /* utilisation de y sans l'avoir initialise */
+
+var prenom : string ;
+x := prenom ; /* affectation d'une string a un int */
+
+x := 0 ;
+y := 1 ;
+
+var unPoint : Point ;
+unPoint := new Point ;
+do unPoint.setPoint(x, y, z); /* passage de 3 parametres a une methode qui n'en prend que 2 */
+
+
+var z : float ; /*type non declare */
